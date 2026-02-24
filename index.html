@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280, user-scalable=no">
+    <title>MetLife 달러종신보험 디지털 브로슈어</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --met-blue: #002D54;
+            --met-accent: #0091DA;
+            --met-gold: #FFC600;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #ffffff;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--met-blue) 0%, #004b8d 100%);
+        }
+        .text-met-blue { color: var(--met-blue); }
+        .bg-met-blue { background-color: var(--met-blue); }
+        .bg-met-gold { background-color: var(--met-gold); }
+        
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        /* Custom Animation Classes */
+        .reveal { opacity: 0; transform: translateY(30px); }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 400px;
+            width: 100%;
+        }
+
+        /* Video Container Aspect Ratio */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 1.5rem;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Force desktop width at all times (for both mobile & desktop) */
+        html, body {
+            min-width: 1280px !important;
+            width: 1280px !important;
+            max-width: 1280px !important;
+            margin: 0 auto !important;
+            overflow-x: auto !important;
+        }
+        @media (max-width: 1279px) {
+            html, body {
+                min-width: 1280px !important;
+            }
+        }
+        /* Prevent mobile text size adjustment */
+        html {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        /* Prevent touch zoom on form elements, buttons, etc */
+        input, select, textarea, button {
+            font-size: 16px !important;
+        }
+        /* Hide scrollbars for neatness on mobile overflow */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent; /* make scrollbar invisible */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <nav class="fixed top-0 w-full z-50 glass py-4 px-8 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-met-blue rounded-sm"></div>
+            <span class="font-black text-2xl tracking-tighter text-met-blue">MetLife</span>
+        </div>
+        <div class="hidden md:flex gap-8 font-medium">
+            <a href="#concept" class="hover:text-blue-600 transition">컨셉</a>
+            <a href="#structure" class="hover:text-blue-600 transition">구조</a>
+            <a href="#video-guide" class="hover:text-blue-600 transition">영상가이드</a>
+            <a href="#visual-data" class="hover:text-blue-600 transition">시각자료</a>
+            <a href="#strategy" class="hover:text-blue-600 transition">전략</a>
+            <a href="#check" class="hover:text-blue-600 transition">체크포인트</a>
+        </div>
+        <button class="bg-met-blue text-white px-6 py-2 rounded-full font-bold hover:bg-blue-800 transition">상담 신청</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient h-screen flex items-center justify-center text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+        </div>
+        <div class="container mx-auto px-6 text-center z-10">
+            <h1 class="text-5xl md:text-8xl font-black mb-6 leading-tight reveal">달러보험,<br><span class="text-met-gold">리스크를 나누는 기술</span></h1>
+            <p class="text-xl md:text-2xl font-light mb-10 opacity-80 reveal">단순한 환테크를 넘어, 당신의 자산을 글로벌 기축통화로 보호하세요.</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center reveal">
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
+                    <div class="text-3xl font-bold text-met-gold">1.47조</div>
+                    <div class="text-sm opacity-70 uppercase tracking-widest">올해 시중은행 판매액</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
+                    <div class="text-3xl font-bold text-met-gold">US Dollar</div>
+                    <div class="text-sm opacity-70 uppercase tracking-widest">글로벌 안전 자산</div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 animate-bounce text-met-gold text-3xl">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Concept Section -->
+    <section id="concept" class="py-24 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2">
+                    <h2 class="text-4xl font-bold text-met-blue mb-6">달러보험은<br>부자가 되는 '게임'이 아닙니다.</h2>
+                    <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                        많은 분이 고환율을 보고 투자를 고민하십니다. 하지만 달러보험의 본질은 수익률이 아닌 <strong>'리스크 분산'</strong>에 있습니다. 원화에만 집중된 자산 포트폴리오를 글로벌 통화로 나누어 인플레이션과 경제 위기 상황에서 가족을 보호하는 가장 강력한 수단입니다.
+                    </p>
+                    <div class="flex items-center gap-4 text-met-blue font-bold">
+                        <span class="w-12 h-1 bg-met-gold"></span>
+                        <span>금융 통역사의 제언</span>
+                    </div>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-4">
+                    <div class="bg-white p-8 rounded-2xl shadow-xl card border-t-4 border-met-blue">
+                        <div class="text-blue-500 text-4xl mb-4"><i class="fa-solid fa-shield-heart"></i></div>
+                        <h3 class="font-bold text-xl mb-2">보장 자산</h3>
+                        <p class="text-sm text-slate-500">사망, 질병 시 달러로 지급되는 든든한 보장</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl card mt-8 border-t-4 border-met-accent">
+                        <div class="text-cyan-500 text-4xl mb-4"><i class="fa-solid fa-earth-americas"></i></div>
+                        <h3 class="font-bold text-xl mb-2">통화 다변화</h3>
+                        <p class="text-sm text-slate-500">원화 가치 하락에 대비하는 안전 장치</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Guide Section (New) -->
+    <section id="video-guide" class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-met-blue mb-4">전문가가 들려주는 달러보험 가이드</h2>
+                <p class="text-slate-500">복잡한 금융 지식, 3분 영상으로 쉽고 명확하게 정리해 드립니다.</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto reveal">
+                <div class="bg-white p-4 rounded-[2rem] shadow-2xl border border-slate-100">
+                    <div class="video-container">
+                        <!-- Sample YouTube Link: MetLife Official or General Dollar Insurance Guide -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/6m6W9v3z-7I?si=Isc6M0B5e5Nqf_yS" 
+                            title="MetLife Dollar Insurance Guide" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                <div class="mt-8 grid md:grid-cols-3 gap-6 text-center">
+                    <div class="p-4">
+                        <div class="text-met-accent text-2xl mb-2"><i class="fa-solid fa-play"></i></div>
+                        <h4 class="font-bold mb-1">핵심 요약</h4>
+                        <p class="text-xs text-slate-400">상품의 핵심 특징만 선별</p>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-met-accent text-2xl mb-2"><i class="fa-solid fa-user-tie"></i></div>
+                        <h4 class="font-bold mb-1">전문가 분석</h4>
+                        <p class="text-xs text-slate-400">현직 FP의 시장 전망 포함</p>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-met-accent text-2xl mb-2"><i class="fa-solid fa-circle-check"></i></div>
+                        <h4 class="font-bold mb-1">가입 가이드</h4>
+                        <p class="text-xs text-slate-400">가입 전 필수 체크리스트</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Structure Section -->
+    <section id="structure" class="py-24 bg-slate-50 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16">달러보험의 핵심 메커니즘</h2>
+            <div class="relative max-w-4xl mx-auto">
+                <!-- SVG Diagram -->
+                <div class="bg-white p-12 rounded-3xl shadow-2xl border border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 relative">
+                    <div class="text-center">
+                        <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-met-blue text-3xl">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <h4 class="font-bold">원화 납입</h4>
+                        <p class="text-xs text-slate-400">KRW</p>
+                    </div>
+                    
+                    <div class="flex-1 flex items-center justify-center">
+                        <div class="h-1 bg-slate-200 w-full relative">
+                            <div class="absolute inset-0 bg-met-accent w-0" id="flow-line"></div>
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-met-blue text-white text-[10px] px-3 py-1 rounded-full uppercase tracking-tighter">Exchange</div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="w-32 h-32 bg-met-blue rounded-full flex items-center justify-center mx-auto mb-4 text-met-gold text-5xl shadow-lg shadow-blue-200">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                        <h4 class="font-bold text-met-blue">글로벌 달러 운용</h4>
+                        <p class="text-xs text-slate-400">MetLife Global Asset</p>
+                    </div>
+
+                    <div class="flex-1 flex items-center justify-center">
+                        <div class="h-1 bg-slate-200 w-full"></div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="w-24 h-24 bg-gold-50 rounded-full flex items-center justify-center mx-auto mb-4 text-met-gold text-3xl">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                        <h4 class="font-bold">달러 지급</h4>
+                        <p class="text-xs text-slate-400">USD</p>
+                    </div>
+                </div>
+                <div class="mt-12 text-center text-slate-500 max-w-2xl mx-auto">
+                    "고객님이 내신 원화는 메트라이프의 글로벌 네트워크를 통해 달러로 운용되며, 나중에 받으실 보험금 또한 달러 기준으로 확정됩니다."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW Visualization Data Section -->
+    <section id="visual-data" class="py-24">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4">데이터로 증명하는 달러의 힘</h2>
+            <p class="text-center text-slate-500 mb-16">원화와 달러의 상관관계를 통해 리스크 분산 효과를 직접 확인하세요.</p>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Chart 1: Negative Correlation -->
+                <div class="bg-white p-8 rounded-3xl shadow-xl">
+                    <h3 class="text-xl font-bold mb-4 text-met-blue"><i class="fa-solid fa-chart-line mr-2"></i>경제 위기 시 자산 방어 효과</h3>
+                    <p class="text-sm text-slate-500 mb-6">금융위기(2008)나 팬데믹(2020)처럼 주식시장이 폭락할 때, 달러 가치는 반대로 급등하여 자산의 전체 하락을 방어합니다.</p>
+                    <div class="chart-container">
+                        <canvas id="defenseChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Long-term Compounding -->
+                <div class="bg-white p-8 rounded-3xl shadow-xl">
+                    <h3 class="text-xl font-bold mb-4 text-met-blue"><i class="fa-solid fa-arrow-up-right-dots mr-2"></i>시간이 만드는 복리 시너지</h3>
+                    <p class="text-sm text-slate-500 mb-6">달러 자산은 그 자체의 가치 상승 외에도 글로벌 우량 자산 운용을 통한 복리 효과가 시간이 갈수록 기하급수적으로 커집니다.</p>
+                    <div class="chart-container">
+                        <canvas id="compoundChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 p-8 bg-met-blue rounded-2xl text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-met-gold rounded-full flex items-center justify-center text-met-blue text-2xl">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold">포트폴리오 리밸런싱</h4>
+                        <p class="text-blue-200 text-sm">달러 비중이 낮을 때 조금씩 모아가는 전략이 가장 안전합니다.</p>
+                    </div>
+                </div>
+                <div class="text-center md:text-right">
+                    <span class="text-3xl font-black text-met-gold">10~20%</span>
+                    <p class="text-xs uppercase tracking-widest opacity-60">권장 자산 배분 비중</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategy: Timeline & Chart Section -->
+    <section id="strategy" class="py-24 bg-met-blue text-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4">장기 보유의 전략적 가치</h2>
+            <p class="text-center text-blue-200 mb-20">시간이 지날수록 환율 변동 리스크는 평균으로 수렴합니다.</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white/5 p-8 rounded-2xl border border-white/10 relative overflow-hidden group">
+                    <div class="text-met-gold text-5xl font-black opacity-20 absolute -right-4 -bottom-4 group-hover:scale-150 transition duration-500">01</div>
+                    <h3 class="text-2xl font-bold mb-4 text-met-gold">7~10년</h3>
+                    <p class="text-blue-100 font-light">보험료 납입과 사업비를 고려한 손익분기 도달 기간입니다. 이 기간을 견디는 것이 달러 자산 확보의 시작입니다.</p>
+                </div>
+                <div class="bg-white/5 p-8 rounded-2xl border border-white/10 relative overflow-hidden group">
+                    <div class="text-met-gold text-5xl font-black opacity-20 absolute -right-4 -bottom-4 group-hover:scale-150 transition duration-500">02</div>
+                    <h3 class="text-2xl font-bold mb-4 text-met-gold">Cost Averaging</h3>
+                    <p class="text-blue-100 font-light">매월 일정액의 원화로 달러를 매수함으로써 환율이 높을 땐 적게, 낮을 땐 많이 사는 평균 매입 단가 인하 효과를 누립니다.</p>
+                </div>
+                <div class="bg-white/5 p-8 rounded-2xl border border-white/10 relative overflow-hidden group">
+                    <div class="text-met-gold text-5xl font-black opacity-20 absolute -right-4 -bottom-4 group-hover:scale-150 transition duration-500">03</div>
+                    <h3 class="text-2xl font-bold mb-4 text-met-gold">Tax Benefit</h3>
+                    <p class="text-blue-100 font-light">관련 세법 충족 시 환차익에 대해 비과세 혜택을 받을 수 있어, 실제 체감 수익률은 더욱 높아집니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Essential Checkpoints -->
+    <section id="check" class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-16">가입 전 꼭 확인해야 할 3원칙</h2>
+                
+                <div class="space-y-6">
+                    <div class="flex gap-6 p-8 bg-slate-50 rounded-3xl border-l-8 border-met-blue reveal">
+                        <div class="flex-shrink-0 w-12 h-12 bg-met-blue text-white rounded-full flex items-center justify-center font-bold">1</div>
+                        <div>
+                            <h4 class="text-xl font-bold mb-2">환율 리스크는 본인의 책임입니다.</h4>
+                            <p class="text-slate-600">환차익은 달콤하지만 환차손은 보험사가 책임지지 않습니다. 본인의 투자 성향과 자산 상황을 면밀히 검토하세요.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 p-8 bg-slate-50 rounded-3xl border-l-8 border-met-accent reveal">
+                        <div class="flex-shrink-0 w-12 h-12 bg-met-accent text-white rounded-full flex items-center justify-center font-bold">2</div>
+                        <div>
+                            <h4 class="text-xl font-bold mb-2">단기 예금이 아닌 '보장성 보험'입니다.</h4>
+                            <p class="text-slate-600">중도 해지 시 납입한 보험료보다 적은 금액을 받을 수 있습니다. 사망 보장과 노후 연금 등 장기적 목적이 우선되어야 합니다.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 p-8 bg-slate-50 rounded-3xl border-l-8 border-met-gold reveal">
+                        <div class="flex-shrink-0 w-12 h-12 bg-met-gold text-met-blue rounded-full flex items-center justify-center font-bold">3</div>
+                        <div>
+                            <h4 class="text-xl font-bold mb-2">포트폴리오의 비중을 조절하세요.</h4>
+                            <p class="text-slate-600">자산 전체를 달러로 채우기보다, 전체 자산 중 일정 비율(예: 10~20%)을 달러로 배분하는 통화 분산 전략이 유리합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / CTA -->
+    <footer class="bg-slate-900 text-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-8">당신의 자산, 글로벌 기준에 맞춰져 있습니까?</h2>
+            <p class="text-slate-400 mb-12 max-w-2xl mx-auto">금융 통역사와 함께 당신의 자산을 진단하고 최적의 달러 포트폴리오를 설계하세요. 메트라이프가 당신의 든든한 파트너가 되어 드립니다.</p>
+            <div class="flex justify-center gap-4">
+                <button class="bg-met-accent text-white px-10 py-4 rounded-full font-bold hover:scale-105 transition shadow-lg">무료 진단 받기</button>
+            </div>
+            <div class="mt-20 pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
+                <p>&copy; 2026 MetLife Financial Services. All rights reserved.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#">개인정보처리방침</a>
+                    <a href="#">약관</a>
+                    <a href="#">공시실</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Animations
+        gsap.to(".reveal", {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            stagger: 0.2,
+            ease: "power3.out"
+        });
+
+        // Flow Line Animation
+        gsap.to("#flow-line", {
+            width: "100%",
+            duration: 2,
+            repeat: -1,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#structure",
+                start: "top center"
+            }
+        });
+
+        // Scroll Reveal for sections
+        const reveals = document.querySelectorAll(".reveal");
+        reveals.forEach(el => {
+            gsap.to(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 85%",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power2.out"
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (nav) {
+                if (window.scrollY > 50) {
+                    nav.classList.add('py-2', 'bg-white/95');
+                    nav.classList.remove('py-4');
+                } else {
+                    nav.classList.remove('py-2', 'bg-white/95');
+                    nav.classList.add('py-4');
+                }
+            }
+        });
+
+        // Charts Logic
+        window.onload = function() {
+            // Defense Chart
+            const ctx1 = document.getElementById('defenseChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['시장상황 A', '시장상황 B', '위기발생', '위기심화', '회복기'],
+                    datasets: [{
+                        label: '국내 주식자산 가치',
+                        data: [100, 105, 70, 60, 80],
+                        borderColor: '#94a3b8',
+                        backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: '달러보험 환산가치',
+                        data: [100, 102, 115, 125, 110],
+                        borderColor: '#0091DA',
+                        backgroundColor: 'rgba(0, 145, 218, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { y: { beginAtZero: false, grid: { display: false } } }
+                }
+            });
+
+            // Compound Chart
+            const ctx2 = document.getElementById('compoundChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['가입시', '5년후', '10년후', '15년후', '20년후'],
+                    datasets: [{
+                        label: '달러 자산의 복리 성장',
+                        data: [1000, 1250, 1600, 2100, 2800],
+                        backgroundColor: '#FFC600',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { grid: { borderDash: [5, 5] } } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
